@@ -80,9 +80,5 @@ slow, honest commit history.
 
 ## Development
 
-```sh
-cargo run
-```
-
 *(Not yet — the first commits are still being written by hand.
 Watch this space.)*
