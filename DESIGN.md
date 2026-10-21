@@ -24,6 +24,12 @@ they are *undetermined until observed*.
 Classic DOND: open cases round by round, receive banker offers,
 take the deal or keep going to the end.
 
+## Prize ladder (classic show, 26 values)
+$0.01 · $1 · $5 · $10 · $25 · $50 · $75 · $100 · $200 · $300 ·
+$400 · $500 · $750 · $1,000 · $5,000 · $10,000 · $25,000 ·
+$50,000 · $75,000 · $100,000 · $200,000 · $300,000 · $400,000 ·
+$500,000 · $750,000 · $1,000,000
+
 ## Banker offer algorithm (TV-style)
 
 Chosen flavor: the TV banker — climbing generosity, may even beat fair
@@ -75,19 +81,49 @@ Don't hardcode round numbers — map the TV curve by game progress
 (fraction of cases opened) and interpolate p. Keeps the feel at any size.
 
 ## Decisions so far
+- [x] **Two game modes: Schrödinger's Deal (primary) and Classic DOND.**
+  Both run on ONE engine — bag-pop without replacement is
+  probabilistically identical to hidden pre-assignment, so modes
+  differ by features/flavor, not math. Classic = no spies, show-style
+  reveal language; Schrödinger = spies available, observation
+  language ("the case resolves to...").
 - [x] Value resolution happens at open-time (bag pop), not pre-assigned
 - [x] Classic DOND structure (banker offers, take-it-or-keep-going)
 - [x] Banker flavor: TV-style (Ritcey–Ranjan fitted schedule above)
 - [x] Twist ideas deferred to post-basic-game
 - [x] Stephanie writes the Rust; AI specs and reviews
+- [x] **Universe philosophy: nothing knows any value before observation** —
+  not the player, not the banker, not the spies. Spy clues are
+  retroactive constraints (weak measurements): the final draw is
+  made consistent with all clues. Truth is created by observation,
+  not revealed by it. No hidden state anywhere.
 
 ## Parking lot (future twists)
-- **Two bankers** (good-cop/bad-cop, argue about the offer)
+- **THE LEAD TWIST — spies/leakers** (don't hold her to it, but it's good):
+  - 1 banker + a **user-selectable number of spies** (leakers/informants).
+  - Spies never reveal exact values — only **inequalities**
+    ("greater than $50,000", "less than $12,000"), about
+    the **player's own case** (confirmed).
+  - **Every clue must be strictly informative**: it must shrink the
+    interval of possible values. A weaker bound than a previous clue
+    adds nothing and is rejected (spy tries again).
+  - Clues must also be consistent: a bound is only legal if some
+    unobserved bag values satisfy it and some don't.
+  - Quantum reading: spy clues are **weak measurements** — partial
+    collapse that shrinks the box without opening it.
+  - Implementation hook: all clues define [lo, hi]; each new clue
+    must strictly refine it; final case value drawn consistent
+    with the full interval.
+  - Open: does the banker hear the spies? (a provably-high case
+    could trigger a lowball or a bidding war)
 - Mid-game "quantum event" chaos (careful: breaks odds reasoning)
 - Case swap offer at the end (classic show twist)
 
 ## Open questions
-- [ ] How many cases? (26 classic, or smaller for terminal UI)
-- [ ] Prize ladder — amounts and top prize
-- [ ] Round structure confirmed once case count is set
-- [ ] Presentation: terminal text UI?
+- [x] Case count: **26** (original/standard).
+- [x] Prize ladder: **classic show ladder**, $0.01 → $1,000,000 (all 26 values).
+- [x] Round structure: **classic 6-5-4-3-2-1-1-1-1** (9 rounds, TV banker
+  schedule applies as-is).
+- [x] Presentation: terminal text UI (first version).
+
+**The plan is complete. Ready for Rust.**
